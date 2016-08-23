@@ -1,7 +1,8 @@
 var request = require('superagent');
 var fs = require('fs');
+var config = require('./config');
 
-let fileName = `${getUserHome()}/.cliprc`;
+const fileName = `${getUserHome()}/.cliprc`;
 
 function getUserHome() {
   return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
@@ -17,7 +18,11 @@ exports.authenticate = function(email, password) {
       })
       .end(function(err, res) {
         if (!err && res.ok) {
-          fs.writeFileSync(fileName, `{"token": "${res.body.token}"}`, { encoding: 'utf8', flag: 'w' });
+          var defaultTeamId = undefined;
+          if (res.body.user.teams && res.body.user.teams.length > 0) {
+            defaultTeamId = res.body.user.teams[0].id;
+          }
+          config.writeConfigFile(res.body.token, defaultTeamId);
           resolve();
         } else {
           var errorMessage;
@@ -31,17 +36,6 @@ exports.authenticate = function(email, password) {
           reject(errorMessage);
         }
       })
-  });
-}
-
-exports.requireToken = function() {
-  return new Promise(function(resolve, reject) {
-    try {
-      resolve(JSON.parse(fs.readFileSync(fileName)).token);
-    } catch (e) {
-      reject(e);
-    }
-        
   });
 }
 

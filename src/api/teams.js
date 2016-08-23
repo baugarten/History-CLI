@@ -1,17 +1,17 @@
-import { requireToken, requireDefaultTeamId } from './config'
+import { requireTokenAndTeamId} from './config'
 import { get, post } from './request'
 const Promise = require('bluebird');
 const request = require('superagent');
-const logger = require('../logger');
 
-exports.clipsList = function(token) {
+exports.teamsList = function(token) {
   return new Promise(function(resolve, reject) {
-    get(token, 'clip')
+    get(token, 'team')
       .end(function(err, res) {
         if (!err && res.ok) {
           return resolve(res.body);
         } else {
           var errorMessage;
+          console.log('Team list failed', res.status);
           if (res && res.status === 401) {
             errorMessage = "Authentication failed! Bad username/password";
           } else if (err) {
@@ -26,7 +26,7 @@ exports.clipsList = function(token) {
 };
 
 exports.clipSave = function(clipText) {
-  return Promise.join(requireToken(), requireDefaultTeamId(), (token, defaultTeamId) => {
+  return requireTokenAndTeamId((token, defaultTeamId) => {
     return exports.clipSaveWithToken(clipText, defaultTeamId, token);
   });
 };

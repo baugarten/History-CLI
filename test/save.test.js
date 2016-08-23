@@ -1,12 +1,22 @@
 import { clipSaveWithToken } from '../src/api/clips';
-var request = require('superagent');
-var config = require('./superagent-mock-config');
-var superagentMock = require('superagent-mock')(request, config);
+var server = require('hist-server').server;
+var TestUtils = require('hist-server').TestUtils;
+var DbUtils = require('hist-server').DbUtils;
+var knex = require('hist-server').knex;
 var should = require('should');
 
 describe('clip save', () => {
+  before(function(done) {
+    this.timeout(10000);
+    DbUtils.clean(knex).then(function() { done(); });
+  });
+
   it('should save clip', () => {
-    return clipSaveWithToken('this is clip text', 'validtoken').then(function(clip) {
+    return clipSaveWithToken(
+      'this is clip text', 
+      TestUtils.defaultTeam().get('id'), 
+      TestUtils.user().generateToken()
+    ).then(function(clip) {
       should(clip.clip).be.equal('this is clip text');
     });
   });

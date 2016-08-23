@@ -2,7 +2,6 @@
 
 require("babel-polyfill");
 
-import { requireToken } from './api/auth'
 import { clipSave } from './api/clips'
 var program = require('commander')
 

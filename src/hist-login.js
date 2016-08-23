@@ -9,17 +9,18 @@ var prompt = require('co-prompt')
 var request = require('superagent')
 var fs = require('fs');
 
+var email = undefined;
 program
-  .option('-e, --email <email>', 'email')
+  .arguments('<email>')
+  .action(function(enteredEmail) {
+    email = enteredEmail;
+  })
   .parse(process.argv)
   
-if (!program.email) {
-  console.error("Need to supply email address")
-  process.exit(1);
-}
-
 co(function *() {
-  var email = program.email;
+  if (!email) {
+    email = yield prompt('email: ');
+  }
   var password = yield prompt.password('password: ');
   authenticate(email, password)
     .then(function() {
