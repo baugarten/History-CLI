@@ -2,7 +2,7 @@
 
 require("babel-polyfill");
 
-import { requireTokenAndTeamId } from './api/config'
+import { requireTokenAndTeamId, changeTeam } from './api/config'
 import { teamsList } from './api/teams'
 import { formatTeamShort } from './utils/formatters'
 const logger = require('./logger')
@@ -11,7 +11,7 @@ const program = require('commander')
 var team;
 
 program
-  .arguments('<team>')
+  .arguments('<new_team>')
   .action(function(enteredTeam) {
     team = enteredTeam;
   })
@@ -30,6 +30,7 @@ function switchDefaultTeamToTeamWithShortName(team) {
       return team.short_name === normalizedTeamName;
     });
     if (foundTeam) {
+      changeTeam(foundTeam.id);
       logger.out(`Switching to team ${foundTeam.short_name}`);
     } else {
       logger.out(`Couldn't find team with name ${team}.`)

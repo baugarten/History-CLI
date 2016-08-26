@@ -15,6 +15,10 @@ function parseConfigFile() {
   return configFile;
 }
 
+export function changeTeam(teamId) {
+  var token = parseConfigFile().token;
+  exports.writeConfigFile(token, teamId);
+}
 
 exports.requireToken = function() {
   return new Promise(function(resolve, reject) {
@@ -43,5 +47,5 @@ exports.requireTokenAndTeamId = function(cb) {
 exports.writeConfigFile = function(token, teamId) {
   var config = { token: token, defaultTeamId: teamId };
   fs.writeFileSync(fileName, JSON.stringify(config), { encoding: 'utf8', flag: 'w' });
-
+  configFile = undefined; // bust cache
 }
