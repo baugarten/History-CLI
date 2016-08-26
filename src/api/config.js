@@ -1,7 +1,7 @@
 const fs = require('fs');
 const Promise = require('bluebird');
 
-const fileName = `${getUserHome()}/.cliprc`;
+const fileName = `${getUserHome()}/.histrc`;
 
 function getUserHome() {
   return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];

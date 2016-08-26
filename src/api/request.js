@@ -8,8 +8,25 @@ request.Request.prototype.end = function(cb) {
   const hrstart = process.hrtime();
   return oldEnd.call(this, function(err, res) {
     const hrend = process.hrtime(hrstart);
-    logger.debug(`[${res.req.method}] request complete to ${res.req.path} - ${hrend[1]/1000000}ms`, err, res.status, res.body);
-    return cb(err, res);
+    var requestInfo;
+    if (!!res) {
+      requestInfo = `[${res.req.method}] request complete to ${res.req.path}`;
+    } else {
+      requestInfo = `request failed`;
+    }
+    logger.debug(`${requestInfo} - ${hrend[1]/1000000}ms`, err && err.toString(), res && res.status, res && res.body);
+
+    var errorMessage;
+    if (err || !res.ok) {
+      if (res && res.status === 401) {
+        errorMessage = "Authentication failed! Bad username/password";
+      } else if (err) {
+        errorMessage = err.toString();
+      } else {
+        errorMessage = res.text;
+      }
+    }
+    return cb(err, res, errorMessage);
   });
 };
 

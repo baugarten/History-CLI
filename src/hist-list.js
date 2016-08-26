@@ -12,14 +12,20 @@ const logger = require('./logger')
 program
   .parse(process.argv)
   
-requireToken(function(token) { 
-  return clipsList(token);
-}).spread(function(body) {
-  body.clips.map(formatClipShort).forEach(function(formattedClip) {
-    logger.out(formattedClip);
+requireToken()
+  .then(function(token) { 
+    return clipsList(token);
+  })
+  .then(function(body) {
+    if (body.clips.length === 0) {
+      logger.out('No clips found.\n\nSave your first one with\n\tclip save echo "Hello World"');
+    } else {
+      body.clips.map(formatClipShort).forEach(function(formattedClip) {
+        logger.out(formattedClip);
+      });
+    }
+    process.exit(0);
+  }, function(err) {
+    console.error("Error fetching clips", err);
+    process.exit(1);
   });
-  process.exit(0);
-}, function(err) {
-  console.error("Error fetching clips", err);
-  process.exit(1);
-});

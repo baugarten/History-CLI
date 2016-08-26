@@ -19,8 +19,11 @@ exports.authenticate = function(email, password) {
       .end(function(err, res) {
         if (!err && res.ok) {
           var defaultTeamId = undefined;
-          if (res.body.user.teams && res.body.user.teams.length > 0) {
-            defaultTeamId = res.body.user.teams[0].id;
+          if (res.body.user.accounts && res.body.user.accounts.length > 0) {
+            let account = res.body.user.accounts[0];
+            if (account.teams && account.teams.length > 0) {
+              defaultTeamId = account.teams[0].id;
+            }
           }
           config.writeConfigFile(res.body.token, defaultTeamId);
           resolve();

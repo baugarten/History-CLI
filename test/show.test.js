@@ -44,8 +44,9 @@ describe('clip show', () => {
       .then(function(clip) {
         return Promise.reject('Expected error');
       }, function(err) {
+        console.log(err);
         should(err).not.be.empty();
-        should(err.status).equal(400);
+        should(err.indexOf('Bad Request')).be.above(-1);
         return Promise.resolve(); 
       }); 
   });

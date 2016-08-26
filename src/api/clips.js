@@ -7,18 +7,10 @@ const logger = require('../logger');
 exports.clipsList = function(token) {
   return new Promise(function(resolve, reject) {
     get(token, 'clip')
-      .end(function(err, res) {
+      .end(function(err, res, errorMessage) {
         if (!err && res.ok) {
           return resolve(res.body);
         } else {
-          var errorMessage;
-          if (res && res.status === 401) {
-            errorMessage = "Authentication failed! Bad username/password";
-          } else if (err) {
-            errorMessage = err;
-          } else {
-            errorMessage = res.text;
-          }
           return reject(errorMessage)
         }
       });
@@ -38,18 +30,10 @@ exports.clipSaveWithToken = function(clipText, teamId, token) {
         'clip': clipText,
         'team_id': teamId
       })
-      .end(function(err, res) {
+      .end(function(err, res, errorMessage) {
         if (!err && res.ok && res.body.clip) {
           return resolve(res.body.clip);
         } else {
-          var errorMessage;
-          if (res && res.status === 401) {
-            errorMessage = "Authentication failed! Bad username/password";
-          } else if (err) {
-            errorMessage = err;
-          } else {
-            errorMessage = res.text;
-          }
           return reject(errorMessage);
         }
       });
@@ -59,18 +43,10 @@ exports.clipSaveWithToken = function(clipText, teamId, token) {
 exports.clipGet = function(token, id) {
   return new Promise(function(resolve, reject) {
     get(token, `clip/${id}`)
-      .end(function(err, res) {
+      .end(function(err, res, errorMessage) {
         if (!err && res.ok && res.body.clip) {
           return resolve(res.body.clip);
         } else {
-          var errorMessage;
-          if (res && res.status === 401) {
-            errorMessage = "Authentication failed! Bad username/password";
-          } else if (err) {
-            errorMessage = err;
-          } else {
-            errorMessage = res.text;
-          }
           return reject(errorMessage);
         }
       });
