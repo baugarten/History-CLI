@@ -9,9 +9,9 @@
     "build:umd:min": "cross-env NODE_ENV=production webpack src/hist.js dist/hist.min.js",
     "clean": "rimraf lib dist coverage",
     "lint": "eslint src test examples",
-    "test": "CLIENT_ENV=test DB_NAME=clip-test mocha --compilers js:babel-register --recursive",
-    "test:cov": "CLIENT_ENV=test DB_NAME=clip-test babel-node ./node_modules/isparta/bin/isparta cover ./node_modules/mocha/bin/_mocha -- --recursive",
-    "test:watch": "CLIENT_ENV=test DB_NAME=clip-test npm test -- --watch"
+    "test": "HIST_URL=localhost:3000 CLIENT_ENV=test DB_NAME=clip-test mocha --compilers js:babel-register --recursive",
+    "test:cov": "HIST_URL=localhost:3000 CCLIENT_ENV=test DB_NAME=clip-test babel-node ./node_modules/isparta/bin/isparta cover ./node_modules/mocha/bin/_mocha -- --recursive",
+    "test:watch": "HIST_URL=localhost:3000 CCLIENT_ENV=test DB_NAME=clip-test npm test -- --watch"
   },
   "bin": {
     "hist": "./lib/hist.js"
