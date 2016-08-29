@@ -1,22 +1,14 @@
-var request = require('superagent');
-var fs = require('fs');
+import { post } from './request'
 var config = require('./config');
-
-const fileName = `${getUserHome()}/.cliprc`;
-
-function getUserHome() {
-  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
-}
 
 exports.authenticate = function(email, password) {
   return new Promise(function(resolve, reject) {
-    request.post('http://localhost:3000/login')
-      .set('Accept', 'application/json')
+    post('login')
       .send({
         'email': email,
         'password': password
       })
-      .end(function(err, res) {
+      .end(function(err, res, errorMessage) {
         if (!err && res.ok) {
           var defaultTeamId = undefined;
           if (res.body.user.accounts && res.body.user.accounts.length > 0) {
@@ -28,15 +20,11 @@ exports.authenticate = function(email, password) {
           config.writeConfigFile(res.body.token, defaultTeamId);
           resolve();
         } else {
-          var errorMessage;
-          if (res && res.body && res.body.msg) {
-            errorMessage = res.body.msg;
-          } else if (err) {
-            errorMessage = err;
+          if (err && res.status === 400) {
+            reject('Invalid email or password.');
           } else {
-            errorMessage = res.text;
+            reject(errorMessage);
           }
-          reject(errorMessage);
         }
       })
   });

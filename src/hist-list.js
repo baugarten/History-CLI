@@ -18,7 +18,7 @@ requireToken()
   })
   .then(function(body) {
     if (body.clips.length === 0) {
-      logger.out('No clips found.\n\nSave your first one with\n\tclip save echo "Hello World"');
+      logger.out('No commands found.\n\nSave your first one with\n\thist save echo "Hello World"');
     } else {
       body.clips.map(formatClipShort).forEach(function(formattedClip) {
         logger.out(formattedClip);
@@ -26,6 +26,6 @@ requireToken()
     }
     process.exit(0);
   }, function(err) {
-    console.error("Error fetching clips", err);
+    console.error("Error fetching commands", err);
     process.exit(1);
   });

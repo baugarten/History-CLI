@@ -1,3 +1,4 @@
+import { baseUrl } from '../config';
 const request = require('superagent');
 const logger = require('../logger');
 
@@ -32,9 +33,17 @@ request.Request.prototype.end = function(cb) {
 
 function mkRequest(method) {
   return function(token, path) {
-    return request[method](`localhost:3000/api/v1/${path}`)
+    if (arguments.length === 1) {
+      path = token;
+      token = undefined;
+    }
+    const r = request[method](`${baseUrl}/api/v1/${path}`)
       .set('Accept', 'application/json')
-      .set('Authorization', `Bearer ${token}`)
+
+    if (token !== undefined) {
+      return r.set('Authorization', `Bearer ${token}`);
+    }
+    return r;
   }
 };
 

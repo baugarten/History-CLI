@@ -3,7 +3,7 @@ const winston = require('winston');
 const logger = new (winston.Logger)({
   transports: [
     new (winston.transports.Console)({
-      level: 'debug'
+      level: 'info'
     }),
     new (winston.transports.File)({
       filename: 'hist.log',

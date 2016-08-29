@@ -3,6 +3,7 @@
 require("babel-polyfill");
 
 import { authenticate } from './api/auth';
+var logger = require('./logger')
 var program = require('commander')
 var co = require('co')
 var prompt = require('co-prompt')
@@ -24,11 +25,12 @@ co(function *() {
   var password = yield prompt.password('password: ');
   authenticate(email, password)
     .then(function() {
+      logger.out('Authentication successful.')
       process.exit(0);
     })
     .catch(function(err) {
       console.error(err);
-     process.exit(1) 
+      process.exit(1) 
     });
 })
 
